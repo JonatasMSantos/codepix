@@ -11,7 +11,7 @@ import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class PixKeysService implements OnModuleInit {
-  private pixGrpcService: PixKeyClientGrpc;
+  private centralBankGrpPixService: PixKeyClientGrpc;
 
   constructor(
     @InjectRepository(PixKey)
@@ -23,7 +23,9 @@ export class PixKeysService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    this.pixGrpcService = this.pixGrpcPackage.getService('PixService');
+    //pega o serviço de dentro do pix.proto
+    this.centralBankGrpPixService =
+      this.pixGrpcPackage.getService('PixService');
   }
 
   async create(bankAccountId: string, createPixKeyDto: CreatePixKeyDto) {
@@ -31,31 +33,32 @@ export class PixKeysService implements OnModuleInit {
       where: { id: bankAccountId },
     });
 
-    const remotePixKey = await this.findRemotePixKey(createPixKeyDto);
-    if (remotePixKey) {
-      return this.createIfNotExists(bankAccountId, remotePixKey);
+    const centralBankPixKey =
+      await this.findPixKeyInCentralBank(createPixKeyDto);
+    if (centralBankPixKey) {
+      return this.createLocalIfNotExists(bankAccountId, centralBankPixKey);
     } else {
-      const createdRemotePixKey = await lastValueFrom(
-        this.pixGrpcService.registerPixKey({
+      const createdCentralBankPixKey = await lastValueFrom(
+        this.centralBankGrpPixService.registerPixKey({
           ...createPixKeyDto,
           accountId: bankAccountId,
         }),
       );
       //se já existe local, atualiza
       return this.pixKeyRepo.save({
-        id: createdRemotePixKey.id,
+        id: createdCentralBankPixKey.id,
         bank_account_id: bankAccountId,
         ...createPixKeyDto,
       });
     }
   }
 
-  private async findRemotePixKey(data: {
+  private async findPixKeyInCentralBank(data: {
     key: string;
     kind: string;
   }): Promise<RegisterPixKeyRpcResponse | null> {
     try {
-      return await lastValueFrom(this.pixGrpcService.find(data));
+      return await lastValueFrom(this.centralBankGrpPixService.find(data));
     } catch (e) {
       console.error(e);
       if (e.details == 'no key was found') {
@@ -66,7 +69,7 @@ export class PixKeysService implements OnModuleInit {
     }
   }
 
-  private async createIfNotExists(
+  private async createLocalIfNotExists(
     bankAccountId: string,
     remotePixKey: RegisterPixKeyRpcResponse,
   ) {

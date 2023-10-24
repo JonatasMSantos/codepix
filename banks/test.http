@@ -1,22 +1,32 @@
 GET http://localhost:3000/bank-accounts
 
-@bank_acount_id = 966e0491-5cd5-438e-9bd4-cc2690522f3e
+@bank_acount_id = 5f21840d-5955-4417-a790-aa0d6a4292c9
+@pix_id = 7cd88f9a-3278-456f-a732-65333bbfb805
 
-/*Contas Bancárias*/
+
+# {
+#   "id": "7cd88f9a-3278-456f-a732-65333bbfb805",
+#   "bank_account_id": "5f21840d-5955-4417-a790-aa0d6a4292c9",
+#   "kind": "email",
+#   "key": "user1@email.com",
+#   "created_at": "2023-10-24T17:24:09.356Z"
+# }
+
+#Contas Bancárias
 
 ###
-GET http://localhost:3000/bank-accounts/677af459-aa07-4f15-b5da-e895b15b1410
+GET http://localhost:3000/bank-accounts/{{bank_acount_id}}
 
 ###
 POST http://localhost:3000/bank-accounts
 Content-Type: application/json
 
 {
-    "account_number": "1111-1",
-    "owner_name": "John Doe"
+   "account_number":"1111-1",
+   "owner_name":"John Doe"
 }
 
-/*Chaves pix da contas*/
+#Chaves pix da contas*/
 
 ###
 GET http://localhost:3000/bank-accounts/{{bank_acount_id}}/pix-keys

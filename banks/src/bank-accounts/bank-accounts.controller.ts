@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { BankAccountsService } from './bank-accounts.service';
 import { CreateBankAccountDto } from './dto/create-bank-account.dto';
-//import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
+// import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
 
 @Controller('bank-accounts')
 export class BankAccountsController {
