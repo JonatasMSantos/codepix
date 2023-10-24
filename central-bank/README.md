@@ -15,25 +15,16 @@ protoc --go_out=application/grpc/pb --go_opt=paths=source_relative --go-grpc_out
 evans application/grpc/protofiles/pixkey.proto
 ```
 
-## Instalar o cobra
-### Command line interface
-
-```bash
-go get -u github.com/spf13/cobra@latest
-```
-
-```bash
-go install github.com/spf13/cobra-cli@latest
-```
+### Command line interface (Cobra)
 
 ### inicializar 
 ```bash
-/go/bin/cobra-cli init
+cobra-cli init
 ```
 
 ### Adicionar cmd
 ```bash
-/go/bin/cobra-cli add grpc
+cobra-cli add grpc
 ```
 
 ### Rodar
