@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/node/app
+
+  db:
+    image: postgres:13-alpine
+    environment: 
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: nest
